@@ -1,6 +1,8 @@
 "use client";
 
 import { BookOpen, CalendarDays, ImagePlus, LibraryBig, Sparkles } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import type { BookCategory } from "@/types/book.types";
 import type { FormEvent, ReactNode } from "react";
 
@@ -29,10 +31,14 @@ function Field({
 }
 
 const AddBookPage = () => {
+    const router = useRouter();
+    const [showSuccessToast, setShowSuccessToast] = useState(false);
+
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        const formData = new FormData(event.currentTarget);
+        const form = event.currentTarget;
+        const formData = new FormData(form);
         const bookData = Object.fromEntries(formData.entries());
 
 
@@ -51,8 +57,9 @@ const AddBookPage = () => {
                 return;
             }
 
-            console.log("Book saved:", await response.json());
-            event.currentTarget.reset();
+            form.reset();
+            setShowSuccessToast(true);
+            window.setTimeout(() => router.push("/books"), 1600);
         } catch (error) {
             console.error("Could not connect to the server:", error);
         }
@@ -60,6 +67,20 @@ const AddBookPage = () => {
 
     return (
         <main className="min-h-screen bg-[#f4f7f2] px-4 py-10 sm:px-6 lg:px-8">
+            {showSuccessToast && (
+                <div
+                    role="status"
+                    className="fixed right-4 top-20 z-50 flex items-center gap-3 rounded-2xl border border-green-200 bg-white px-5 py-4 text-green-950 shadow-xl shadow-green-950/10"
+                >
+                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-green-100 text-green-800">
+                        <Sparkles className="h-4 w-4" />
+                    </span>
+                    <div>
+                        <p className="text-sm font-bold">Book added successfully!</p>
+                        <p className="text-xs text-green-700">Taking you to All Books…</p>
+                    </div>
+                </div>
+            )}
             <div className="mx-auto max-w-6xl">
                 <div className="mb-8">
                     <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-green-100 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-green-900">
