@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
-import { BookOpen, Check, Leaf, Link2, Upload } from "lucide-react";
+import { useState} from "react";
+import { BookOpen, Check, Leaf} from "lucide-react";
 import { signUp } from "@/lib/auth-client";
+import { imageFileToDataUrl } from "@/lib/image-file";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -43,11 +44,16 @@ const RegisterPage = () => {
 
         setPending(true)
         try {
+            const imageFile = formData.get("imageFile")
+            const image = imageFile instanceof File && imageFile.size > 0
+                ? await imageFileToDataUrl(imageFile)
+                : data.imageUrl || undefined
+
             const { data: resData, error } = await signUp.email({
                 name: data.name,
                 email: data.email,
                 password: data.password,
-                image: data.image || undefined
+                image,
             })
 
             if (error) {
@@ -58,8 +64,8 @@ const RegisterPage = () => {
             console.log(resData)
             router.push("/")
             router.refresh()
-        } catch {
-            setError("Something went wrong. Please try again.")
+        } catch (error) {
+            setError(error instanceof Error ? error.message : "Something went wrong. Please try again.")
         } finally {
             setPending(false)
         }
@@ -149,35 +155,10 @@ const RegisterPage = () => {
                                     placeholder="Re-enter your password"
                                     className={inputClass}
                                 />
+                                <p className="mt-2 text-xs text-slate-500">At least 8 characters, with one uppercase letter and one number.</p>
                             </div>
 
-                            <div className="space-y-3">
-                                <div>
-                                    <Label htmlFor="imageUrl" className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                                        <Link2 className="h-4 w-4 text-green-700" /> Profile image link <span className="font-normal text-slate-400">(optional)</span>
-                                    </Label>
-                                    <Input
-                                        id="imageUrl"
-                                        name="imageUrl"
-                                        type="url"
-                                        placeholder="https://example.com/photo.jpg"
-                                        className={inputClass}
-                                    />
-                                </div>
-                                <div>
-                                    <Label htmlFor="imageFile" className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                                        <Upload className="h-4 w-4 text-green-700" /> Or choose from this device
-                                    </Label>
-                                    <Input
-                                        id="imageFile"
-                                        name="imageFile"
-                                        type="file"
-                                        accept="image/*"
-                                        className="mt-2 h-auto rounded-xl border-slate-200 bg-green-50/50 px-3 py-2.5 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-green-800 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white hover:file:bg-green-900"
-                                    />
-                                    <p className="mt-2 text-xs text-slate-500">If both are provided, the selected file will be used.</p>
-                                </div>
-                            </div>
+
 
                             <Button
                                 type="submit"
