@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import {  User, Layers } from 'lucide-react';
+import { User, Layers } from 'lucide-react';
 import Image from 'next/image';
 import { IBook } from '@/types/book.types';
 
@@ -16,8 +16,8 @@ export function BookCard({ book }: { book: IBook }) {
                     {/* Book Cover Image */}
                     <div className="relative h-60 w-full overflow-hidden bg-slate-100 dark:bg-slate-800">
                         <Image
-                            width={400}
-                            height={400}
+                            width={4000}
+                            height={40}
                             src={book.image}
                             alt={book.title}
                             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"

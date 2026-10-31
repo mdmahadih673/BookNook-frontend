@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { IBook } from '@/types/book.types';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import MyBorrowsPage from '@/components/My Borrows/MyBorrows';
 
 export const instant = false;
 
@@ -31,13 +32,7 @@ const BookDetalisPage = async ({ params }: { params: Promise<{ id: string }> }) 
           {/* <Link href={''} className="mt-6 rounded-xl bg-[#205C40] text-white px-6 py-3 text-sm font-semibold hover:opacity-90 shadow-lg">
             
           </Link> */}
-          <Link
-            href={'/my-borrows'}
-            className="inline-flex items-center mt-6 bg-[#205C40] text-white gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
-          >
-            Add to My Borrows
-            <ArrowRight className="size-4" />
-          </Link>
+          <MyBorrowsPage book ={book} />
         </div>
       </div>
     </div>

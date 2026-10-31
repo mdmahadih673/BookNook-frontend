@@ -87,7 +87,7 @@ export function NavbarPage() {
               Sign In
             </Link>
             <Link
-              href="/register"
+              href="/Register"
               className="inline-flex items-center rounded-lg px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
               style={{ backgroundColor: REGISTER_RED }}
             >
