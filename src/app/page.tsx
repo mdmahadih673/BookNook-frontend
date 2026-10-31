@@ -1,6 +1,7 @@
 import HeroSlider from "@/components/home/HeroSlider";
 import { HowBorrowingWorks } from "@/components/home/HowBorrowingWorks";
 import { ReaderTestimonials } from "@/components/home/ReaderTestimonials";
+import { CtaBanner } from "@/components/home/CtaBanner";
 
 export default function Home() {
   return (
@@ -8,6 +9,7 @@ export default function Home() {
       <HeroSlider />
       <HowBorrowingWorks />
       <ReaderTestimonials />
+      <CtaBanner />
     </div>
   );
 }
