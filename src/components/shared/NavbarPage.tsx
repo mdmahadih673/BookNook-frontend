@@ -8,7 +8,6 @@ import { cn } from "cn";
 const NAV_ITEMS = [
   { label: "Home", href: "/" },
   { label: "All Books", href: "/books" },
-  { label: "Book Details", href: "/book-details" },
   { label: "My Borrows", href: "/my-borrows" },
 ] as const;
 
