@@ -36,7 +36,7 @@ export function BookCard({ book }: { book: IBook }) {
 
                     {/* Content */}
                     <CardContent className="p-5 space-y-2.5">
-                        <h3 className="font-bold text-lg text-slate-900 dark:text-slate-100 line-clamp-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                        <h3 className="font-bold text-lg text-slate-900 dark:text-slate-100 line-clamp-1 group-hover:text-green-800 dark:group-hover:text-green-400 transition-colors">
                             {book.title}
                         </h3>
                         <div className="flex items-center text-sm text-slate-500 dark:text-slate-400 space-x-1.5">
@@ -51,7 +51,7 @@ export function BookCard({ book }: { book: IBook }) {
 
                 <CardFooter className="p-5 pt-0 border-t border-slate-100 dark:border-slate-800/80 mt-2 flex items-center justify-between">
                     <div className="flex items-center text-xs text-slate-500 space-x-1">
-                        <Layers className="h-3.5 w-3.5 text-indigo-500" />
+                        <Layers className="h-3.5 w-3.5 text-green-700" />
                         <span>Total: {book.totalCopies}</span>
                     </div>
                 </CardFooter>
