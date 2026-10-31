@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { label: "Home", href: "/" },
   { label: "All Books", href: "/books" },
   { label: "My Borrows", href: "/my-borrows" },
+  { label: "Add Book", href: "/add-books" },
 ] as const;
 
 const BRAND_GREEN = "#205C40";

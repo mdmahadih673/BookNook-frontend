@@ -7,7 +7,7 @@ import { BookCard } from '../books/BookCard';
 
 const NewArrivals = async () => {
 
-    const res = await fetch('http://localhost:5000/books')
+    const res = await fetch('https://book-nook-backend-two.vercel.app/books')
     const data = await res.json()
 
     return (

@@ -8,7 +8,7 @@ export const instant = false;
 
 const BookDetalisPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
-  const res = await fetch(`http://localhost:5000/books/${id}`, { cache: 'no-store' });
+  const res = await fetch(`https://book-nook-backend-two.vercel.app/books/${id}`, { cache: 'no-store' });
   const book: IBook = await res.json();
 
   return (
