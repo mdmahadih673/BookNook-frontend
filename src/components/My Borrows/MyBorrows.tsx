@@ -76,7 +76,7 @@ const MyBorrowsPage = ({ book }: { book: IBook }) => {
 
       toast.add({
         title: "Book borrowed",
-        description: "You have 14 days to return this book.",
+        description: "The book has been added to your borrows.",
         type: "success",
       });
       router.refresh();

@@ -34,10 +34,10 @@ const STEPS = [
     chip: { backgroundColor: "#A2DCC6", color: "#0E5F4B" },
     title: "Immerse & Enjoy",
     description:
-      "Enjoy a peaceful 14-day reading cycle. Need extra time with dense texts? Extend effortlessly with a single digital click.",
+      "Enjoy a peaceful reading cycle. When you finish, return the book for the next reader.",
     footnote: {
       icon: Clock,
-      text: "1-click flexible renewals",
+      text: "Flexible reading time",
     },
   },
   {

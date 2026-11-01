@@ -1,18 +1,7 @@
 "use client";
 
-import { BookOpen, CalendarDays, LibraryBig } from "lucide-react";
+import { BookOpen, LibraryBig } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogMedia,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import type { IBook } from "@/types/book.types";
 import BorrowRow from "./BorrowRow";
 
@@ -28,33 +17,8 @@ export default function MyBorrowsDesign({
   books: BorrowedBook[];
   userName?: string;
 }) {
-  const [reminderDismissed, setReminderDismissed] = useState(false);
-  const reminderOpen = books.length > 0 && !reminderDismissed;
-
   return (
     <main className="min-h-[70vh] bg-[#f4f7f2] px-4 py-10 sm:px-6 sm:py-14">
-      <AlertDialog
-        open={reminderOpen}
-        onOpenChange={(open) => {
-          if (!open) setReminderDismissed(true);
-        }}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogMedia className="bg-green-100 text-green-800">
-              <CalendarDays />
-            </AlertDialogMedia>
-            <AlertDialogTitle>14-day return reminder</AlertDialogTitle>
-            <AlertDialogDescription>
-              You have borrowed this book for 14 days. Please return it within
-              that time using the Return Book button.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Got it</AlertDialogCancel>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
       <div className="mx-auto max-w-7xl">
         <header className="relative mb-9 overflow-hidden rounded-3xl bg-gradient-to-br from-green-800 via-green-900 to-emerald-950 px-6 py-8 text-white shadow-lg shadow-green-950/15 sm:px-10 sm:py-10">
           <div className="absolute -right-10 -top-24 size-72 rounded-full border border-lime-100/10 bg-lime-100/5" />
