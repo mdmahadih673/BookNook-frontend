@@ -1,9 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { IBook } from '@/types/book.types';
-import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
-import MyBorrowsPage from '@/components/My Borrows/MyBorrows';
+import MyBorrowsPage from '@/components/My Borrows/MyBorrowsPage';
 
 export const instant = false;
 
@@ -29,10 +27,8 @@ const BookDetalisPage = async ({ params }: { params: Promise<{ id: string }> }) 
             <p><span className="font-semibold">Added by:</span> {book.userName} ({book.userEmail})</p>
             <p><span className="font-semibold">Added on:</span> {new Date(book.addedDate).toLocaleDateString()}</p>
           </div>
-          {/* <Link href={''} className="mt-6 rounded-xl bg-[#205C40] text-white px-6 py-3 text-sm font-semibold hover:opacity-90 shadow-lg">
-            
-          </Link> */}
-          <MyBorrowsPage book ={book} />
+
+          <MyBorrowsPage book={book} />
         </div>
       </div>
     </div>
