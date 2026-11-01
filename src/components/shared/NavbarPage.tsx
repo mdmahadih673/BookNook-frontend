@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { cn } from "cn";
 import { Spinner } from "../ui/spinner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { signOut, useSession } from "@/lib/auth-client";
+import { useSession } from "@/lib/auth-client";
 import React from "react";
 
 const NAV_ITEMS = [
@@ -20,23 +20,10 @@ const BRAND_GREEN = "#205C40";
 export function NavbarPage() {
   const pathname = usePathname();
 
-  const [signingOut, setSigningOut] = React.useState(false)
-  const router = useRouter()
   const { data: session, isPending } = useSession()
 
   const user = session?.user
   const signedIn = !!user
-
-  const handleSignOut = async () => {
-    setSigningOut(true)
-    try {
-      await signOut()
-      router.push("/")
-      router.refresh()
-    } finally {
-      setSigningOut(false)
-    }
-  }
 
   // Account area while the session is still resolving — keeps layout stable.
   const pendingAccount = (
@@ -108,14 +95,6 @@ export function NavbarPage() {
                 </Avatar>
                 <span className="hidden max-w-28 truncate sm:inline">{user.name}</span>
               </Link>
-              <button
-                type="button"
-                onClick={handleSignOut}
-                disabled={signingOut}
-                className="rounded-lg border border-green-800 px-3 py-2 text-sm font-semibold text-green-900 transition hover:bg-green-50 disabled:cursor-wait disabled:opacity-60 sm:px-4"
-              >
-                {signingOut ? "Signing out…" : "Sign Out"}
-              </button>
             </div>
           ) : (
             <div className="flex items-center gap-2 sm:gap-4">

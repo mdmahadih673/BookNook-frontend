@@ -1,6 +1,4 @@
-import Link from "next/link";
-import { Bookmark, BookOpen, Clock, Heart, MapPin, Search } from "lucide-react";
-import { cn } from "cn";
+import {  BookOpen, Clock, Heart, MapPin, Search } from "lucide-react";
 
 const BRAND_GREEN = "#1D4230";
 const CARD_GREEN = "#1E5B44";
@@ -114,38 +112,8 @@ export function HowBorrowingWorks() {
           ))}
         </div>
 
-        {/* Banner */}
-        <div className="mt-10 flex flex-col gap-5 rounded-2xl bg-[#E9EEE7] p-6 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-start gap-4">
-            <span
-              className={cn(
-                "flex size-11 shrink-0 items-center justify-center rounded-full",
-                "bg-[#CFE0CC]"
-              )}
-            >
-              <Bookmark className="size-5" style={{ color: CARD_GREEN }} />
-            </span>
-            <div>
-              <h3
-                className="text-base font-semibold"
-                style={{ color: BRAND_GREEN }}
-              >
-                Every Borrow Leaves a Trace
-              </h3>
-              <p className="mt-1 text-sm text-neutral-600">
-                Read the handwritten slips tucked into the shelves by previous
-                borrowers since 2021.
-              </p>
-            </div>
-          </div>
-
-          <Link
-            href="/slip-archive"
-            className="inline-flex shrink-0 items-center self-start rounded-lg bg-[#D7DDD4] px-5 py-2.5 text-sm font-semibold text-neutral-800 transition-colors hover:bg-[#CBD3C9] sm:self-center"
-          >
-            View Slip Archive
-          </Link>
-        </div>
+   
+        
       </div>
     </section>
   );

@@ -26,17 +26,17 @@ export function CtaBanner() {
 
           <div className="mt-7 flex flex-wrap items-center gap-3">
             <Link
-              href="/register-host"
+              href="/Register"
               className="inline-flex items-center rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
               style={{ backgroundColor: REGISTER_RED }}
             >
-              Register as a Book Host
+              Register 
             </Link>
             <Link
-              href="/drop-boxes"
+              href="/books"
               className="inline-flex items-center rounded-lg bg-white/15 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/25"
             >
-              Find Nearest Drop Box
+              See All Books
             </Link>
           </div>
         </div>

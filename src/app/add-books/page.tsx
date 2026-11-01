@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { BookCategory } from "@/types/book.types";
 import type { FormEvent, ReactNode } from "react";
+import { API_BASE } from "@/lib/api";
 
 const categories: BookCategory[] = ["Fiction", "Science", "History", "Kids", "Others"];
 
@@ -44,7 +45,7 @@ const AddBookPage = () => {
 
         try {
             const response = await fetch(
-                "https://book-nook-backend-two.vercel.app/books",
+                `${API_BASE}/books`,
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },

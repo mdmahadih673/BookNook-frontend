@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import HeroSlider from "@/components/home/HeroSlider";
 import { HowBorrowingWorks } from "@/components/home/HowBorrowingWorks";
-import { ReaderTestimonials } from "@/components/home/ReaderTestimonials";
 import { CtaBanner } from "@/components/home/CtaBanner";
 import NewArrivals from "@/components/home/NewArrivals";
 
@@ -13,7 +12,7 @@ export default function Home() {
         <NewArrivals />
       </Suspense>
       <HowBorrowingWorks />
-      <ReaderTestimonials />
+      
       <CtaBanner />
     </div>
   );

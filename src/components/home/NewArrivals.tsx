@@ -4,10 +4,11 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { IBook } from '@/types/book.types';
 import { BookCard } from '../books/BookCard';
+import { API_BASE } from '@/lib/api';
 
 const NewArrivals = async () => {
 
-    const res = await fetch('https://book-nook-backend-two.vercel.app/books')
+    const res = await fetch(`${API_BASE}/books`)
     const data = await res.json()
 
     return (

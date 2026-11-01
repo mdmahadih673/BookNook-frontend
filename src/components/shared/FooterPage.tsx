@@ -25,7 +25,6 @@ const FOOTER_COLUMNS = [
     heading: "Policies",
     links: [
       { label: "Lending Rules", href: "/policies/lending-rules" },
-      { label: "Renewals & Holds", href: "/policies/renewals-holds" },
       { label: "Care for Books", href: "/policies/care-for-books" },
       { label: "Accessibility Guide", href: "/policies/accessibility-guide" },
     ],

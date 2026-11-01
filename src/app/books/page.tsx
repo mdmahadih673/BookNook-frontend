@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { BookCard } from '@/components/books/BookCard';
 import { IBook } from '@/types/book.types';
+import { API_BASE } from '@/lib/api';
 
 export default function AllBookPage() {
   const [books, setBooks] = useState<IBook[]>([]);
@@ -14,7 +15,7 @@ export default function AllBookPage() {
   const [sort, setSort] = useState('newest');
 
   useEffect(() => {
-    fetch('https://book-nook-backend-two.vercel.app/books')
+    fetch(`${API_BASE}/books`)
       .then((r) => r.json())
       .then((d) => setBooks(d));
   }, []);
@@ -98,11 +99,7 @@ export default function AllBookPage() {
           ))}
         </div>
 
-        <div className="mt-12 text-center">
-          <Link href="/" className="inline-block rounded-xl bg-green-800 px-6 py-3 text-sm font-semibold text-white transition hover:bg-green-900">
-            Donate or Register a Book
-          </Link>
-        </div>
+        
       </div>
     </div>
   );
