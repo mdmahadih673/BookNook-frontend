@@ -2,14 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import {
-  BookOpen,
-  Loader2,
-  RotateCcw,
-} from "lucide-react";
-import { toast } from "@/components/ui/toast";
+import { BookOpen } from "lucide-react";
 import type { IBook } from "@/types/book.types";
 
 type BorrowedBook = Partial<IBook> & {
@@ -20,48 +13,7 @@ type BorrowedBook = Partial<IBook> & {
 const ROW_GRID =
   "lg:grid lg:grid-cols-[minmax(0,2.4fr)_1fr] lg:items-center lg:gap-6";
 
-const API_BASE = "https://book-nook-backend-two.vercel.app";
-
 export default function BorrowRow({ book }: { book: BorrowedBook }) {
-  const router = useRouter();
-  const [pending, setPending] = useState<"return" | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  const act = async () => {
-    setPending("return");
-    setError(null);
-    try {
-      const res = await fetch(`${API_BASE}/my-borrows/${book._id}`, { method: "DELETE" });
-
-      if (!res.ok) {
-        console.error("Return request failed:", res.status, await res.text());
-        setError("Return failed. Please try again.");
-        toast.add({
-          title: "Return failed",
-          description: "Could not return this book. Please try again.",
-          type: "error",
-        });
-        return;
-      }
-      toast.add({
-        title: "Book returned",
-        description: "The book is back in the available collection.",
-        type: "success",
-      });
-      router.refresh();
-    } catch (error) {
-      console.error("Could not connect to the borrow API:", error);
-      setError("Could not reach the library server.");
-      toast.add({
-        title: "Connection failed",
-        description: "Could not reach the library server.",
-        type: "error",
-      });
-    } finally {
-      setPending(null);
-    }
-  };
-
   const cover = (
     <div className="relative h-24 w-16 shrink-0 overflow-hidden rounded-lg bg-green-50 ring-1 ring-green-950/10">
       {book.image ? (
@@ -117,30 +69,12 @@ export default function BorrowRow({ book }: { book: BorrowedBook }) {
         </div>
       </div>
 
-      {/* Status + actions */}
+      {/* Borrow status */}
       <div className="flex flex-wrap items-center justify-between gap-3 lg:justify-end">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-green-100 px-3 py-1.5 text-xs font-semibold text-green-800">
           <span className="size-1.5 rounded-full bg-green-500" />
           Active Loan
         </span>
-
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            onClick={() => act()}
-            disabled={pending !== null}
-            className="inline-flex items-center gap-2 rounded-lg bg-[#4a2c1a] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {pending === "return" ? <Loader2 className="size-4 animate-spin" /> : <RotateCcw className="size-4" />}
-            Return Book
-          </button>
-        </div>
-
-        {error && (
-          <p className="w-full text-right text-xs font-medium text-red-600 lg:w-auto lg:basis-full" role="alert">
-            {error}
-          </p>
-        )}
       </div>
     </article>
   );

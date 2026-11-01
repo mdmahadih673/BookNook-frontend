@@ -66,7 +66,7 @@ export default function MyBorrowsDesign({
             {/* Column labels — desktop only */}
             <div className="hidden grid-cols-[minmax(0,2.4fr)_1fr] gap-6 border-b border-green-950/10 bg-[#fafcfa] px-6 py-4 text-sm font-semibold text-slate-500 lg:grid">
               <span>Book Details</span>
-              <span className="text-right">Circulation Status &amp; Actions</span>
+              <span className="text-right">Circulation Status</span>
             </div>
 
             <div className="divide-y divide-green-950/10">
