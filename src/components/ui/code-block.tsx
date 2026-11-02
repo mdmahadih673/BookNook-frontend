@@ -117,7 +117,6 @@ function CodeBlockCopyButton({
           navigator.clipboard
             .writeText(value)
             .then(() => setCopied(true))
-            .catch(() => {})
         }}
         {...props}
       >

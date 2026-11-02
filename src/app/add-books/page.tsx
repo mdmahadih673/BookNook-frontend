@@ -1,326 +1,117 @@
 "use client";
 
-import { BookOpen, CalendarDays, ImagePlus, LibraryBig, Sparkles } from "lucide-react";
+import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useSession } from "@/lib/auth-client";
+import { getTokenFromClient } from "@/lib/getTokenFromClient";
 import type { BookCategory } from "@/types/book.types";
-import type { FormEvent, ReactNode } from "react";
-import { API_BASE } from "@/lib/api";
+import { AddBookSkeleton } from "@/components/shared/Skeletons";
 
 const categories: BookCategory[] = ["Fiction", "Science", "History", "Kids", "Others"];
 
-const inputClass =
-    "mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-green-600 focus:ring-4 focus:ring-green-100";
+export default function AddBookPage() {
+  const router = useRouter();
+  const { data: session, isPending } = useSession();
+  const [message, setMessage] = useState("");
 
-function Field({
-    label,
-    htmlFor,
-    children,
-}: {
-    label: string;
-    htmlFor: string;
-    children: ReactNode;
-}) {
-    return (
+  const addBook = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setMessage("");
+    const form = new FormData(event.currentTarget);
+    const totalCopies = Number(form.get("totalCopies"));
+    const coverImage = form.get("coverImage");
+
+    if (!(coverImage instanceof File) || !coverImage.size) {
+      setMessage("Choose a cover image first.");
+      return;
+    }
+
+    const imageApiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
+    if (!imageApiKey) {
+      setMessage("Add NEXT_PUBLIC_IMGBB_API_KEY to the frontend environment first.");
+      return;
+    }
+
+    const uploadForm = new FormData();
+    uploadForm.append("image", coverImage);
+    const uploadResponse = await fetch(`https://api.imgbb.com/1/upload?key=${imageApiKey}`, {
+      method: "POST",
+      body: uploadForm,
+    });
+    const uploadData = await uploadResponse.json();
+    if (!uploadResponse.ok || !uploadData.success || !uploadData.data?.url) {
+      setMessage(uploadData.error?.message || "Could not upload the cover image.");
+      return;
+    }
+
+    const token = await getTokenFromClient();
+
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/books`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({
+        title: form.get("title"),
+        author: form.get("author"),
+        category: form.get("category"),
+        image: uploadData.data.url,
+        description: form.get("description"),
+        totalCopies,
+        availableCopies: totalCopies,
+        addedDate: new Date().toISOString(),
+        userName: session?.user.name,
+        userEmail: session?.user.email,
+      }),
+    });
+
+    if (response.ok) {
+      router.push("/books");
+      router.refresh();
+    } else {
+      setMessage("Could not add the book. Please check the form and try again.");
+    }
+  };
+
+  if (isPending) return <AddBookSkeleton />;
+
+  return (
+    <main className="min-h-screen bg-[#f4f7f2] px-4 py-10">
+      <form onSubmit={addBook} className="mx-auto max-w-xl space-y-4 rounded-2xl border border-green-950/10 bg-white p-6 shadow-md shadow-green-950/5 sm:p-8">
         <div>
-            <label htmlFor={htmlFor} className="text-sm font-semibold text-slate-700">
-                {label}
-            </label>
-            {children}
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-green-800">Share your shelf</p>
+          <h1 className="font-serif text-3xl font-bold tracking-tight text-slate-900">Add a book</h1>
+          <p className="mt-2 text-sm text-slate-600">Share a book with the BookNook community.</p>
         </div>
-    );
+
+        <label className="block text-sm font-medium text-slate-700">Book title
+          <input name="title" required className="mt-1 w-full rounded-lg border border-slate-200 p-3 outline-none transition focus:border-green-700 focus:ring-2 focus:ring-green-700/15" />
+        </label>
+        <label className="block text-sm font-medium text-slate-700">Author
+          <input name="author" required className="mt-1 w-full rounded-lg border border-slate-200 p-3 outline-none transition focus:border-green-700 focus:ring-2 focus:ring-green-700/15" />
+        </label>
+        <label className="block text-sm font-medium text-slate-700">Category
+          <select name="category" required className="mt-1 w-full rounded-lg border border-slate-200 bg-white p-3 outline-none transition focus:border-green-700 focus:ring-2 focus:ring-green-700/15">
+            {categories.map((category) => <option key={category}>{category}</option>)}
+          </select>
+        </label>
+        <label className="block text-sm font-medium text-slate-700">Cover image
+          <input name="coverImage" type="file" accept="image/*" required className="mt-1 min-w-0 w-full rounded-lg border border-slate-200 bg-white p-3 text-xs outline-none transition file:mr-2 file:max-w-[45%] file:truncate file:rounded-md file:border-0 file:bg-green-50 file:px-2 file:py-1.5 file:font-medium file:text-green-900 sm:text-sm sm:file:mr-3 sm:file:px-3 focus:border-green-700 focus:ring-2 focus:ring-green-700/15" />
+        </label>
+        <label className="block text-sm font-medium text-slate-700">Description
+          <textarea name="description" required rows={4} className="mt-1 w-full rounded-lg border border-slate-200 p-3 outline-none transition focus:border-green-700 focus:ring-2 focus:ring-green-700/15" />
+        </label>
+        <label className="block text-sm font-medium text-slate-700">Total copies
+          <input name="totalCopies" type="number" min="1" required className="mt-1 w-full rounded-lg border border-slate-200 p-3 outline-none transition focus:border-green-700 focus:ring-2 focus:ring-green-700/15" />
+        </label>
+        <label className="block text-sm font-medium text-slate-700">Added by
+          <input value={session?.user.name ?? ""} readOnly className="mt-1 w-full rounded-lg border bg-slate-50 p-3" />
+        </label>
+        <label className="block text-sm font-medium text-slate-700">Email
+          <input value={session?.user.email ?? ""} readOnly className="mt-1 w-full rounded-lg border bg-slate-50 p-3" />
+        </label>
+
+        {message && <p role="alert" className="text-sm text-red-700">{message}</p>}
+        <button className="w-full rounded-lg bg-green-800 p-3 font-semibold text-white shadow-sm transition hover:bg-green-900">Add Book</button>
+      </form>
+    </main>
+  );
 }
-
-const AddBookPage = () => {
-    const router = useRouter();
-    const [showSuccessToast, setShowSuccessToast] = useState(false);
-
-    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-
-        const form = event.currentTarget;
-        const formData = new FormData(form);
-        const bookData = Object.fromEntries(formData.entries());
-
-
-        try {
-            const response = await fetch(
-                `${API_BASE}/books`,
-                {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(bookData),
-                }
-            );
-
-            if (!response.ok) {
-                console.error("Book save failed:", await response.text());
-                return;
-            }
-
-            form.reset();
-            setShowSuccessToast(true);
-            window.setTimeout(() => router.push("/books"), 1600);
-        } catch (error) {
-            console.error("Could not connect to the server:", error);
-        }
-    };
-
-    return (
-        <main className="min-h-screen bg-[#f4f7f2] px-4 py-10 sm:px-6 lg:px-8">
-            {showSuccessToast && (
-                <div
-                    role="status"
-                    className="fixed right-4 top-20 z-50 flex items-center gap-3 rounded-2xl border border-green-200 bg-white px-5 py-4 text-green-950 shadow-xl shadow-green-950/10"
-                >
-                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-green-100 text-green-800">
-                        <Sparkles className="h-4 w-4" />
-                    </span>
-                    <div>
-                        <p className="text-sm font-bold">Book added successfully!</p>
-                        <p className="text-xs text-green-700">Taking you to All Books…</p>
-                    </div>
-                </div>
-            )}
-            <div className="mx-auto max-w-6xl">
-                <div className="mb-8">
-                    <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-green-100 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-green-900">
-                        <Sparkles className="h-3.5 w-3.5" />
-                        Grow the collection
-                    </div>
-
-                    <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
-                        Add a book
-                    </h1>
-
-                    <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500 sm:text-base">
-                        Share a great read with the BookNook community. Add the details below
-                        to create its listing.
-                    </p>
-                </div>
-
-                <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
-                    <form
-                        onSubmit={handleSubmit}
-                        className="space-y-7 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8"
-                    >
-                        <section>
-                            <div className="mb-5 flex items-center gap-3 border-b border-slate-100 pb-4">
-                                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-100 text-green-800">
-                                    <BookOpen className="h-5 w-5" />
-                                </span>
-                                <div>
-                                    <h2 className="font-bold text-slate-900">Book details</h2>
-                                    <p className="text-xs text-slate-500">
-                                        Tell readers what they can discover.
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="grid gap-5 sm:grid-cols-2">
-                                <Field label="Book title" htmlFor="title">
-                                    <input
-                                        id="title"
-                                        name="title"
-                                        required
-                                        placeholder="e.g. The Midnight Library"
-                                        className={inputClass}
-                                    />
-                                </Field>
-
-                                <Field label="Author" htmlFor="author">
-                                    <input
-                                        id="author"
-                                        name="author"
-                                        required
-                                        placeholder="Author's name"
-                                        className={inputClass}
-                                    />
-                                </Field>
-
-                                <Field label="Category" htmlFor="category">
-                                    <select
-                                        id="category"
-                                        name="category"
-                                        required
-                                        defaultValue=""
-                                        className={`${inputClass} appearance-none`}
-                                    >
-                                        <option value="" disabled>
-                                            Select a category
-                                        </option>
-                                        {categories.map((category) => (
-                                            <option key={category} value={category}>
-                                                {category}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </Field>
-
-                                <Field label="Cover image URL" htmlFor="image">
-                                    <div className="relative">
-                                        <ImagePlus className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                                        <input
-                                            id="image"
-                                            name="image"
-                                            type="url"
-                                            required
-                                            placeholder="https://example.com/book-cover.jpg"
-                                            className={`${inputClass} pl-11`}
-                                        />
-                                    </div>
-                                </Field>
-
-                                <div className="sm:col-span-2">
-                                    <Field label="Description" htmlFor="description">
-                                        <textarea
-                                            id="description"
-                                            name="description"
-                                            required
-                                            rows={4}
-                                            placeholder="A short introduction to this book..."
-                                            className={`${inputClass} resize-y`}
-                                        />
-                                    </Field>
-                                </div>
-                            </div>
-                        </section>
-
-                        <section>
-                            <div className="mb-5 flex items-center gap-3 border-b border-slate-100 pb-4">
-                                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
-                                    <LibraryBig className="h-5 w-5" />
-                                </span>
-                                <div>
-                                    <h2 className="font-bold text-slate-900">Copies & listing</h2>
-                                    <p className="text-xs text-slate-500">
-                                        Set availability and listing date.
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="grid gap-5 sm:grid-cols-3">
-                                <Field label="Total copies" htmlFor="totalCopies">
-                                    <input
-                                        id="totalCopies"
-                                        name="totalCopies"
-                                        type="number"
-                                        min="0"
-                                        required
-                                        placeholder="0"
-                                        className={inputClass}
-                                    />
-                                </Field>
-
-                                <Field label="Available copies" htmlFor="availableCopies">
-                                    <input
-                                        id="availableCopies"
-                                        name="availableCopies"
-                                        type="number"
-                                        min="0"
-                                        required
-                                        placeholder="0"
-                                        className={inputClass}
-                                    />
-                                </Field>
-
-                                <Field label="Added date" htmlFor="addedDate">
-                                    <div className="relative">
-                                        <CalendarDays className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                                        <input
-                                            id="addedDate"
-                                            name="addedDate"
-                                            type="date"
-                                            required
-                                            className={`${inputClass} pl-11`}
-                                        />
-                                    </div>
-                                </Field>
-                            </div>
-                        </section>
-
-                        <section>
-                            <div className="mb-5 flex items-center gap-3 border-b border-slate-100 pb-4">
-                                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
-                                    <span className="text-lg font-bold">@</span>
-                                </span>
-                                <div>
-                                    <h2 className="font-bold text-slate-900">Added by</h2>
-                                    <p className="text-xs text-slate-500">
-                                        Contact details for the book contributor.
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="grid gap-5 sm:grid-cols-2">
-                                <Field label="Your name" htmlFor="userName">
-                                    <input
-                                        id="userName"
-                                        name="userName"
-                                        autoComplete="name"
-                                        required
-                                        placeholder="Full name"
-                                        className={inputClass}
-                                    />
-                                </Field>
-
-                                <Field label="Email address" htmlFor="userEmail">
-                                    <input
-                                        id="userEmail"
-                                        name="userEmail"
-                                        type="email"
-                                        autoComplete="email"
-                                        required
-                                        placeholder="you@example.com"
-                                        className={inputClass}
-                                    />
-                                </Field>
-                            </div>
-                        </section>
-
-                        <div className="flex flex-col-reverse gap-3 border-t border-slate-100 pt-5 sm:flex-row sm:justify-end">
-                            <button
-                                type="reset"
-                                className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
-                            >
-                                Clear form
-                            </button>
-                            <button
-                                type="submit"
-                                className="rounded-xl bg-green-800 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-green-900/20 transition hover:bg-green-900"
-                            >
-                                Create book listing
-                            </button>
-                        </div>
-                    </form>
-
-                    <aside className="h-fit overflow-hidden rounded-3xl bg-gradient-to-br from-green-700 via-green-800 to-emerald-950 p-6 text-white shadow-lg shadow-green-950/20 lg:sticky lg:top-6">
-                        <div className="mb-8 flex h-12 w-12 items-center justify-center rounded-2xl bg-lime-200/15 text-lime-100">
-                            <BookOpen className="h-6 w-6" />
-                        </div>
-                        <p className="text-xs font-bold uppercase tracking-[0.2em] text-lime-200">
-                            A little more to share
-                        </p>
-                        <h2 className="mt-3 text-2xl font-extrabold leading-tight">
-                            Every book opens a new door.
-                        </h2>
-                        <p className="mt-3 text-sm leading-6 text-green-100">
-                            Add a thoughtful description and a clear cover image so readers can
-                            find their next favorite.
-                        </p>
-                        <div className="mt-8 rounded-2xl border border-lime-100/20 bg-green-950/25 p-4">
-                            <p className="text-sm font-semibold">Listing checklist</p>
-                            <ul className="mt-3 space-y-2 text-sm text-green-100">
-                                <li>• Accurate title and author</li>
-                                <li>• Correct copy availability</li>
-                                <li>• A helpful book description</li>
-                            </ul>
-                        </div>
-                    </aside>
-                </div>
-            </div>
-        </main>
-    );
-};
-
-export default AddBookPage;

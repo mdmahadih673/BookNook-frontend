@@ -10,25 +10,26 @@ export function BookCard({ book }: { book: IBook }) {
     const isAvailable = book.availableCopies > 0;
 
     return (
-        <Link href={`/books/${book._id}`}>
-            <Card className="group overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between">
+        <Link href={`/books/${book._id}`} className="block h-full min-w-0">
+            <Card className="group h-full overflow-hidden rounded-2xl border border-slate-200/80 bg-white/90 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900/90 flex flex-col justify-between">
                 <div>
                     {/* Book Cover Image */}
-                    <div className="relative h-60 w-full overflow-hidden bg-slate-100 dark:bg-slate-800">
+                    <div className="relative h-52 w-full overflow-hidden bg-slate-100 sm:h-60 dark:bg-slate-800">
                         <Image
                             width={4000}
                             height={40}
                             src={book.image}
                             alt={book.title}
+                            unoptimized
                             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
-                        <div className="absolute top-3 left-3">
-                            <Badge variant="secondary" className="backdrop-blur-md bg-white/80 dark:bg-slate-900/80 shadow-sm">
+                        <div className="absolute top-3 left-3 max-w-[45%]">
+                            <Badge variant="secondary" className="max-w-full truncate bg-white/80 text-[10px] leading-4 shadow-sm backdrop-blur-md sm:text-xs dark:bg-slate-900/80">
                                 {book.category}
                             </Badge>
                         </div>
-                        <div className="absolute top-3 right-3">
-                            <Badge variant={isAvailable ? 'default' : 'destructive'} className="shadow-sm">
+                        <div className="absolute top-3 right-3 max-w-[55%]">
+                            <Badge variant={isAvailable ? 'default' : 'destructive'} className="max-w-full truncate text-[10px] leading-4 shadow-sm sm:text-xs">
                                 {isAvailable ? `${book.availableCopies} Copies Available` : 'Out of Stock'}
                             </Badge>
                         </div>

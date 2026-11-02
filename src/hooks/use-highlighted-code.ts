@@ -20,7 +20,6 @@ export function useHighlightedCode(value: string, language: string) {
           setLoaded({ language, highlighter: next })
         }
       })
-      .catch(() => {})
 
     return () => {
       cancelled = true

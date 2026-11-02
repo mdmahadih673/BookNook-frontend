@@ -1,37 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BookNook
 
-## Getting Started
+BookNook is a small online library where readers can discover books, borrow available copies, and return them when finished.
 
-First, run the development server:
+**Live site:** [book-nook-frontend-two.vercel.app](https://book-nook-frontend-two.vercel.app)
+
+## Features
+
+- Browse the full book collection and sort books by title, availability, or newest first.
+- View book details, cover images, descriptions, and available copy counts.
+- Create an account or sign in with email/password, Google, or GitHub.
+- Add books with an uploaded cover image, category, description, and copy count.
+- Edit or delete books you added from the My Books page.
+- Borrow available books for 14 days and return them from My Borrows.
+- Update your profile name and photo.
+
+## Tech stack
+
+- Next.js App Router, React, TypeScript, and Tailwind CSS
+- Better Auth with MongoDB
+- Express.js and MongoDB for the API
+- ImgBB for book cover image uploads
+
+## Run locally
 
 ```bash
+cd frontend
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Configure the required environment variables in the frontend and backend `.env` files before starting the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Repositories
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# BookNook-frontend
+- [Frontend](https://github.com/mdmahadih673/BookNook-frontend)
+- [Backend](https://github.com/mdmahadih673/BookNook-backend)

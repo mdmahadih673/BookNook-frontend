@@ -1,119 +1,62 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { cn } from "cn";
-import { Spinner } from "../ui/spinner";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useSession } from "@/lib/auth-client";
-import React from "react";
+import { signOut, useSession } from "@/lib/auth-client";
 
-const NAV_ITEMS = [
+const links = [
   { label: "Home", href: "/" },
   { label: "All Books", href: "/books" },
-  { label: "My Borrows", href: "/my-borrows" },
-  { label: "Add Book", href: "/add-books" },
-] as const;
-
-const BRAND_GREEN = "#205C40";
+  { label: "My Books", href: "/my-books", private: true },
+  { label: "My Borrows", href: "/my-borrows", private: true },
+  { label: "Add Book", href: "/add-books", private: true },
+];
 
 export function NavbarPage() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { data: session } = useSession();
+  const user = session?.user;
 
-  const { data: session, isPending } = useSession()
-
-  const user = session?.user
-  const signedIn = !!user
-
-  // Account area while the session is still resolving — keeps layout stable.
-  const pendingAccount = (
-    <span className="inline-flex size-7 items-center justify-center" aria-hidden="true">
-      <Spinner className="text-muted-foreground" />
-    </span>
-  )
+  const logout = async () => {
+    await signOut();
+    router.push("/");
+    router.refresh();
+  };
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-neutral-200 bg-white">
-      <nav
-        aria-label="Main navigation"
-        className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8"
-      >
-        {/* Logo */}
-        <Link href="/" className="flex shrink-0 flex-col leading-none">
-          <span
-            className="font-serif text-2xl font-bold tracking-tight"
-            style={{ color: BRAND_GREEN }}
-          >
-            BookNook
-          </span>
-          <span
-            className="text-[10px] font-semibold tracking-[0.35em]"
-            style={{ color: BRAND_GREEN }}
-          >
-            COMMUNITY LIBRARY
-          </span>
-        </Link>
-
-        {/* Center links */}
-        <ul className="hidden items-center gap-1 md:flex">
-          {NAV_ITEMS.map((item) => {
-            const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
-            return (
-              <li key={item.label}>
-                <Link
-                  href={item.href}
-                  aria-current={isActive ? "page" : undefined}
-                  className={cn(
-                    "inline-flex items-center rounded-lg px-4 py-2 text-sm font-medium transition-colors",
-                    isActive
-                      ? "text-white"
-                      : "text-neutral-800 hover:bg-neutral-100 hover:text-neutral-900"
-                  )}
-                  style={isActive ? { backgroundColor: BRAND_GREEN } : undefined}
-                >
-                  {item.label}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-
-        {/* Right side */}
-        <div className="flex shrink-0 items-center gap-3 sm:gap-4">
-          {isPending ? pendingAccount : signedIn ? (
-            <div className="flex items-center gap-2 sm:gap-3">
-              <Link
-                href="/profile"
-                className="flex min-w-0 items-center gap-2 rounded-full py-1 pl-1 pr-2 text-sm font-semibold text-green-950 transition hover:bg-green-50"
-                aria-label={`Open ${user.name}'s profile`}
-              >
-                <Avatar size="sm" className="size-9 ring-2 ring-green-100">
-                  {user.image && <AvatarImage src={user.image} alt={user.name ?? "Profile photo"} />}
-                  <AvatarFallback className="bg-green-100 text-xs font-bold text-green-900">
-                    {user.name?.trim().slice(0, 1).toUpperCase() || "B"}
-                  </AvatarFallback>
-                </Avatar>
-                <span className="hidden max-w-28 truncate sm:inline">{user.name}</span>
-              </Link>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2 sm:gap-4">
-              <Link
-                href="/signIn"
-                className="text-sm font-medium text-neutral-800 transition-colors hover:text-green-900"
-              >
-                Sign In
-              </Link>
-              <Link
-                href="/Register"
-                className="inline-flex items-center rounded-lg px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
-                style={{ backgroundColor: BRAND_GREEN }}
-              >
-                Register
-              </Link>
-            </div>
-          )}
+    <header className="sticky top-0 z-40 border-b border-green-950/10 bg-white/95 shadow-sm backdrop-blur">
+      <nav aria-label="Main navigation" className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 gap-y-2 px-3 py-3 sm:px-6 lg:flex-nowrap lg:justify-between">
+        <Link href="/" className="shrink-0 font-serif text-2xl font-bold tracking-tight text-green-900 transition hover:text-green-700">BookNook<span className="text-amber-600">.</span></Link>
+        <div className="order-3 flex w-full items-center gap-1 overflow-x-auto pb-1 sm:gap-2 lg:order-none lg:w-auto lg:flex-wrap lg:overflow-visible lg:pb-0">
+          {links.filter((item) => !item.private || user).map((item) => (
+            <Link key={item.href} href={item.href} className={`shrink-0 rounded-lg px-2.5 py-2 text-sm transition sm:px-3 ${pathname === item.href ? "bg-green-50 font-semibold text-green-900" : "text-slate-700 hover:bg-slate-50 hover:text-green-800"}`}>
+              {item.label}
+            </Link>
+          ))}
         </div>
+        {user ? (
+          <details className="relative ml-auto shrink-0">
+            <summary className="flex cursor-pointer list-none items-center gap-2 rounded-full border border-slate-200 px-3 py-1.5 text-sm text-slate-700 transition hover:border-green-700/40 hover:bg-green-50/60">
+              <span className="relative grid size-7 place-items-center overflow-hidden rounded-full bg-green-100 font-semibold text-green-900">
+                {user.image
+                  ? <Image src={user.image} alt="" fill unoptimized sizes="28px" className="object-cover" />
+                  : user.name.charAt(0)}
+              </span>
+              <span className="hidden max-w-32 truncate sm:inline">{user.name}</span>
+            </summary>
+            <div className="absolute right-0 z-50 mt-2 w-40 rounded-lg border bg-white p-2 shadow-lg">
+              <Link href="/profile" className="block rounded px-3 py-2 text-sm hover:bg-green-50">My Profile</Link>
+              <button onClick={logout} className="w-full rounded px-3 py-2 text-left text-sm text-red-700 hover:bg-red-50">Logout</button>
+            </div>
+          </details>
+        ) : (
+          <div className="ml-auto flex shrink-0 items-center gap-2 text-sm sm:gap-3">
+            <Link href="/signIn" className="py-2 text-slate-700">Sign in</Link>
+            <Link href="/Register" className="rounded-lg bg-green-800 px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-green-900">Register</Link>
+          </div>
+        )}
       </nav>
     </header>
   );

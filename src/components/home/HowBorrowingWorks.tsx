@@ -1,119 +1,23 @@
-import {  BookOpen, Clock, Heart, MapPin, Search } from "lucide-react";
-
-const BRAND_GREEN = "#1D4230";
-const CARD_GREEN = "#1E5B44";
-const BRICK = "#8A4B2F";
-
-const STEPS = [
-  {
-    number: "1",
-    chip: { backgroundColor: "#F8D9C9", color: "#7A2E1D" },
-    title: "Discover & Reserve",
-    description:
-      "Explore catalog shelves online or in person. Place a warm 24-hour hold with just one tap—no login hurdles required.",
-    footnote: {
-      icon: Search,
-      text: "Real-time shelf tracker",
-    },
-  },
-  {
-    number: "2",
-    chip: { backgroundColor: "#DDEAD8", color: "#1E5B44" },
-    title: "Pick Up or Exchange",
-    description:
-      "Collect from the library vestibule or your nearest neighborhood nook. Stamp the date card inside the rear pocket.",
-    footnote: {
-      icon: MapPin,
-      text: "14 Neighborhood pantries",
-    },
-  },
-  {
-    number: "3",
-    chip: { backgroundColor: "#A2DCC6", color: "#0E5F4B" },
-    title: "Immerse & Enjoy",
-    description:
-      "Enjoy a peaceful reading cycle. When you finish, return the book for the next reader.",
-    footnote: {
-      icon: Clock,
-      text: "Flexible reading time",
-    },
-  },
-  {
-    number: "4",
-    chip: { backgroundColor: "#E4E4DF", color: "#3F3F3F" },
-    title: "Return for Others",
-    description:
-      "Drop the volume in any returns slot. Feel free to tuck a handwritten note on the bookmark for the next fellow reader.",
-    footnote: {
-      icon: Heart,
-      text: "Earn community karma",
-    },
-  },
-] as const;
+const steps = [
+  { title: "Find a book", text: "Browse the collection and open a book you like." },
+  { title: "Borrow it", text: "Sign in and borrow an available copy." },
+  { title: "Return it", text: "When you finish, return the book for another reader." },
+];
 
 export function HowBorrowingWorks() {
   return (
-    <section className="w-full bg-[#F2F3EF] py-14 sm:py-16">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Heading */}
-        <div className="text-center">
-          <span
-            className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.18em]"
-            style={{ color: BRICK }}
-          >
-            <BookOpen className="size-3.5" />
-            Lending Sanctuary Process
-          </span>
-          <h2
-            className="mt-3 font-serif text-4xl font-bold"
-            style={{ color: BRAND_GREEN }}
-          >
-            How Borrowing Works
-          </h2>
-          <p className="mt-3 text-sm text-neutral-600">
-            Designed with zero friction, physical book cards, and communal
-            respect at every touchpoint.
-          </p>
-        </div>
-
-        {/* Step cards */}
-        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {STEPS.map((step) => (
-            <article
-              key={step.number}
-              className="flex flex-col rounded-2xl border border-neutral-200/70 bg-white p-6 shadow-sm"
-            >
-              <span
-                className="flex size-10 items-center justify-center rounded-lg text-sm font-semibold"
-                style={step.chip}
-              >
-                {step.number}
-              </span>
-
-              <h3
-                className="mt-5 text-lg font-semibold"
-                style={{ color: CARD_GREEN }}
-              >
-                {step.title}
-              </h3>
-
-              <p className="mt-3 text-sm leading-relaxed text-neutral-600">
-                {step.description}
-              </p>
-
-              <p className="mt-6 flex items-center gap-2 text-xs text-neutral-700">
-                <step.footnote.icon
-                  className="size-3.5 text-neutral-700"
-                  aria-hidden="true"
-                />
-                {step.footnote.text}
-              </p>
+    <section className="bg-white px-4 py-12 sm:px-6">
+      <div className="mx-auto max-w-6xl">
+        <h2 className="text-center text-2xl font-bold text-slate-900">How Borrowing Works</h2>
+        <div className="mt-7 grid gap-4 sm:grid-cols-3">
+          {steps.map((step, index) => (
+            <article key={step.title} className="rounded-xl border p-5">
+              <p className="text-sm font-semibold text-green-800">Step {index + 1}</p>
+              <h3 className="mt-2 font-semibold text-slate-900">{step.title}</h3>
+              <p className="mt-2 text-sm text-slate-600">{step.text}</p>
             </article>
           ))}
         </div>
-
-   
-        
       </div>
     </section>
   );
