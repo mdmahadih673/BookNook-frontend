@@ -16,7 +16,31 @@ export default function EditProfile({
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const newName = String(form.get("name") ?? "").trim();
-    const image = String(form.get("image") ?? "").trim();
+    const photo = form.get("photo");
+    let image = "";
+
+    if (photo instanceof File && photo.size > 0) {
+      const imageApiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
+      if (!imageApiKey) {
+        setMessage("Image upload is not configured.");
+        return;
+      }
+
+      const uploadForm = new FormData();
+      uploadForm.append("image", photo);
+      const uploadResponse = await fetch(`https://api.imgbb.com/1/upload?key=${imageApiKey}`, {
+        method: "POST",
+        body: uploadForm,
+      });
+      const uploadData = await uploadResponse.json();
+
+      if (!uploadResponse.ok || !uploadData.success || !uploadData.data?.url) {
+        setMessage(uploadData.error?.message || "Could not upload the profile photo.");
+        return;
+      }
+      image = uploadData.data.url;
+    }
+
     const { error } = await updateUser(image ? { name: newName, image } : { name: newName });
 
     if (error) {
@@ -34,8 +58,8 @@ export default function EditProfile({
         <label className="block text-sm">Name
           <input name="name" defaultValue={name} required className="mt-1 w-full rounded-lg border p-2.5" />
         </label>
-        <label className="block text-sm">Photo URL
-          <input name="image" type="url" placeholder="https://example.com/photo.jpg" className="mt-1 w-full rounded-lg border p-2.5" />
+        <label className="block text-sm">Profile photo
+          <input name="photo" type="file" accept="image/*" className="mt-1 w-full rounded-lg border p-2.5 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-green-50 file:px-3 file:py-2 file:font-medium file:text-green-900" />
         </label>
         {message && <p role="status" className="text-sm text-slate-600">{message}</p>}
         <button className="rounded-lg bg-green-800 px-4 py-2 text-sm font-semibold text-white">Save</button>
