@@ -11,6 +11,11 @@ const client = globalForMongo.mongoClient ?? new MongoClient(process.env.MONGODB
 globalForMongo.mongoClient = client;
 const db = client.db("BookNook");
 
+// Check and restore the connection before auth requests use the cached client.
+export const ensureAuthDatabase = async () => {
+    await client.connect();
+};
+
 
 export const auth = betterAuth({
     baseURL: process.env.BETTER_AUTH_URL,

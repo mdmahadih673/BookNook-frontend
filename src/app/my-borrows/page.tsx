@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 import Link from "next/link";
-import { auth } from "@/lib/auth";
+import { auth, ensureAuthDatabase } from "@/lib/auth";
 import { getTokenFromServer } from "@/lib/getTokenFromServer";
 import { redirect } from "next/navigation";
 import BorrowListCard from "@/components/my-borrows/borrowListCard";
@@ -19,6 +19,7 @@ type BorrowedBook = Partial<IBook> & {
 };
 
 export default async function MyBorrowsPage() {
+  await ensureAuthDatabase();
   const session = await auth.api.getSession({ headers: await headers() });
   const user = session?.user;
   if (!user) redirect(`/signIn?callbackUrl=${encodeURIComponent("/my-borrows")}`);
