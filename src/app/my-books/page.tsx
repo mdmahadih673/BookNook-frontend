@@ -2,6 +2,7 @@ import Image from "next/image";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { getTokenFromServer } from "@/lib/getTokenFromServer";
+import { redirect } from "next/navigation";
 import type { IBook } from "@/types/book.types";
 import EditBookButton from "@/components/my-books/EditBookButton";
 import DeleteBookButton from "@/components/my-books/DeleteBookButton";
@@ -12,6 +13,7 @@ export const instant = false;
 export default async function MyBooksPage() {
   const session = await auth.api.getSession({ headers: await headers() });
   const user = session?.user;
+  if (!user) redirect(`/signIn?callbackUrl=${encodeURIComponent("/my-books")}`);
 
   let books: IBook[] = [];
 

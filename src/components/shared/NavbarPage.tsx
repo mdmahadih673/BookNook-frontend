@@ -10,7 +10,7 @@ const links = [
   { label: "All Books", href: "/books" },
   { label: "My Books", href: "/my-books", private: true },
   { label: "My Borrows", href: "/my-borrows", private: true },
-  { label: "Add Book", href: "/add-books", private: true },
+  { label: "Add Book", href: "/add-book", private: true },
 ];
 
 export function NavbarPage() {
@@ -53,7 +53,7 @@ export function NavbarPage() {
           </details>
         ) : (
           <div className="ml-auto flex shrink-0 items-center gap-2 text-sm sm:gap-3">
-            <Link href="/signIn" className="py-2 text-slate-700">Sign in</Link>
+            <Link href="/signIn" className="py-2 text-slate-700">Login</Link>
             <Link href="/Register" className="rounded-lg bg-green-800 px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-green-900">Register</Link>
           </div>
         )}

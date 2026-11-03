@@ -146,3 +146,32 @@
     cursor: pointer;
   }
 }
+
+.booknook-swiper {
+  --swiper-theme-color: #fcd34d;
+}
+
+.booknook-swiper .swiper-button-prev,
+.booknook-swiper .swiper-button-next {
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgb(255 255 255 / 45%);
+  border-radius: 9999px;
+  background: rgb(0 0 0 / 35%);
+  backdrop-filter: blur(6px);
+}
+
+.booknook-swiper .swiper-button-prev::after,
+.booknook-swiper .swiper-button-next::after {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.booknook-swiper .swiper-pagination-bullet {
+  background: white;
+  opacity: 0.55;
+}
+
+.booknook-swiper .swiper-pagination-bullet-active {
+  opacity: 1;
+}

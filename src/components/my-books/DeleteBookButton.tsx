@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { getTokenFromClient } from "@/lib/getTokenFromClient";
 import type { IBook } from "@/types/book.types";
+import { notify } from "@/lib/notify";
 
 export default function DeleteBookButton({ book }: { book: IBook }) {
   const router = useRouter();
@@ -18,7 +19,10 @@ export default function DeleteBookButton({ book }: { book: IBook }) {
 
     if (response.ok) {
       setOpen(false);
+      notify("Book deleted successfully.", "success");
       router.refresh();
+    } else {
+      notify("Could not delete the book.", "error");
     }
   };
 

@@ -3,6 +3,9 @@ import Link from "next/link";
 import type { IBook } from "@/types/book.types";
 import AddToMyBorrowsButton from "@/components/my-borrows/addToMyBorrowsButton";
 import { getTokenFromServer } from "@/lib/getTokenFromServer";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 export const metadata = { title: "Book Details" };
 export const instant = false;
@@ -18,6 +21,8 @@ async function getBook(id: string): Promise<IBook | null> {
 
 export default async function BookDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session?.user) redirect(`/signIn?callbackUrl=${encodeURIComponent(`/books/${id}`)}`);
   const book = await getBook(id);
 
   return (

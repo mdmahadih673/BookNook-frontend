@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useSession } from '@/lib/auth-client';
 import { getTokenFromClient } from '@/lib/getTokenFromClient';
 import type { IBook } from '@/types/book.types';
+import { notify } from '@/lib/notify';
 import { BookPlus, CircleCheck, Loader2, TriangleAlert } from 'lucide-react';
 
 const AddToMyBorrowsButton = ({ book }: { book: IBook }) => {
@@ -38,6 +39,7 @@ const AddToMyBorrowsButton = ({ book }: { book: IBook }) => {
         const token = await getTokenFromClient();
         if (!token) {
             setError('Please sign in again to borrow this book.');
+            notify('Please sign in again to borrow this book.', 'error');
             setPending(false);
             return;
         }
@@ -66,11 +68,13 @@ const AddToMyBorrowsButton = ({ book }: { book: IBook }) => {
                 console.error('Borrow request failed:', res.status);
             }
             setError(message);
+            notify(message, 'error');
             setPending(false);
             return;
         }
 
         setDone(true);
+        notify('Book borrowed successfully.', 'success');
         setOpen(false);
         router.refresh();
         setPending(false);

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { signIn } from "@/lib/auth-client";
+import { notify } from "@/lib/notify";
 
 function getCallbackURL() {
     const requested = new URLSearchParams(window.location.search).get("callbackUrl");
@@ -58,7 +59,7 @@ export default function SignInPage() {
     return (
         <main className="flex min-h-[70vh] items-center justify-center bg-[#f4f7f2] px-4 py-10">
             <section className="w-full max-w-md rounded-2xl border border-green-950/10 bg-white p-6 shadow-sm sm:p-8">
-                <h1 className="text-3xl font-bold text-slate-900">Sign in</h1>
+                <h1 className="text-3xl font-bold text-slate-900">Login</h1>
                 <p className="mt-2 text-sm text-slate-600">Welcome back to BookNook.</p>
 
                 <form onSubmit={handleSubmit} className="mt-6 space-y-4">
@@ -68,9 +69,12 @@ export default function SignInPage() {
                     <label className="block text-sm font-medium text-slate-700">Password
                         <input name="password" type="password" required className="mt-1 w-full rounded-lg border p-3" />
                     </label>
+                    <button type="button" onClick={() => notify("Password reset is not enabled for this assignment.", "info")} className="text-sm font-medium text-green-800 underline">
+                        Forgot password?
+                    </button>
                     {state.error && <p role="alert" className="text-sm text-red-700">{state.error}</p>}
                     <button disabled={state.pending} className="w-full rounded-lg bg-green-800 p-3 font-semibold text-white disabled:opacity-60">
-                        {state.pending ? "Signing in…" : "Sign in"}
+                        {state.pending ? "Logging in…" : "Login"}
                     </button>
                 </form>
 

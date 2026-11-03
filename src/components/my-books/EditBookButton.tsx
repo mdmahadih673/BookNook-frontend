@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { getTokenFromClient } from "@/lib/getTokenFromClient";
 import type { IBook } from "@/types/book.types";
+import { notify } from "@/lib/notify";
 
 export default function EditBookButton({ book }: { book: IBook }) {
   const router = useRouter();
@@ -26,7 +27,10 @@ export default function EditBookButton({ book }: { book: IBook }) {
 
     if (response.ok) {
       setOpen(false);
+      notify("Book updated successfully.", "success");
       router.refresh();
+    } else {
+      notify("Could not update the book.", "error");
     }
   };
 

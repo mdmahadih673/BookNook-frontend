@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
-export const metadata: Metadata = { title: "Sign In" };
+export const metadata: Metadata = { title: "Login" };
 
 export default function SignInLayout({ children }: { children: ReactNode }) {
   return children;

@@ -27,7 +27,7 @@ BookNook is an online library where readers can browse books, borrow available c
 | `/books/[id]` | Book details and borrow action |
 | `/signIn` | Sign in with password or a social provider |
 | `/Register` | Create an account |
-| `/add-books` | Add a book with an uploaded cover |
+| `/add-book` | Add a book with an uploaded cover |
 | `/my-books` | Manage books added by the signed-in user |
 | `/my-borrows` | View and return borrowed books |
 | `/profile` | View and edit profile information |

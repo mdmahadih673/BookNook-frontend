@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { getTokenFromServer } from "@/lib/getTokenFromServer";
+import { redirect } from "next/navigation";
 import BorrowListCard from "@/components/my-borrows/borrowListCard";
 import type { IBook } from "@/types/book.types";
 
@@ -11,13 +12,16 @@ export const instant = false;
 type BorrowedBook = Partial<IBook> & {
   _id: string;
   bookId?: string;
-  borrowedAt?: string | Date;
-  dueAt?: string | Date;
+  bookTitle?: string;
+  bookImage?: string;
+  borrowDate?: string | Date;
+  returnDate?: string | Date;
 };
 
 export default async function MyBorrowsPage() {
   const session = await auth.api.getSession({ headers: await headers() });
   const user = session?.user;
+  if (!user) redirect(`/signIn?callbackUrl=${encodeURIComponent("/my-borrows")}`);
   let books: BorrowedBook[] = [];
 
   if (user) {

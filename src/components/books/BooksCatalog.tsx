@@ -16,7 +16,7 @@ export default function BooksCatalog({ books }: { books: IBook[] }) {
         ? a.title.localeCompare(b.title)
         : sort === "available"
           ? b.availableCopies - a.availableCopies
-          : new Date(b.addedDate).getTime() - new Date(a.addedDate).getTime()
+          : Date.parse(b.addedDate) - Date.parse(a.addedDate)
     );
 
   return (

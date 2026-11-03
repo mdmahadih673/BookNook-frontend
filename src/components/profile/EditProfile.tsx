@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { updateUser } from "@/lib/auth-client";
+import { notify } from "@/lib/notify";
 
 export default function EditProfile({
   name,
@@ -23,6 +24,7 @@ export default function EditProfile({
       const imageApiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
       if (!imageApiKey) {
         setMessage("Image upload is not configured.");
+        notify("Image upload is not configured.", "error");
         return;
       }
 
@@ -36,6 +38,7 @@ export default function EditProfile({
 
       if (!uploadResponse.ok || !uploadData.success || !uploadData.data?.url) {
         setMessage(uploadData.error?.message || "Could not upload the profile photo.");
+        notify(uploadData.error?.message || "Could not upload the profile photo.", "error");
         return;
       }
       image = uploadData.data.url;
@@ -45,9 +48,11 @@ export default function EditProfile({
 
     if (error) {
       setMessage(error.message || "Could not save your profile.");
+      notify(error.message || "Could not save your profile.", "error");
       return;
     }
     setMessage("Profile saved.");
+    notify("Profile saved.", "success");
     onUpdated?.();
   };
 
